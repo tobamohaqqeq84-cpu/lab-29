@@ -77,4 +77,23 @@ void simulate_step(Env& env, int t){
         string id = buckets[SEEDLING].front();
         buckets[SEEDLING].pop_front();
         buckets[GROWING].push_back(id);
-    })
+    }
+     if (t % 3 == 0){
+         buckets[SEEDLING].push_back("N"+to_string(t) +"_" + plot);
+     }}}
+
+int main(){
+    Env env;
+    if(!load_data("data.cvs", env){
+        cerr << "HINT: ensure dtat.cvs exists in the same  folder. \n";  
+        return 1;
+    }
+    print_env(env, -1);
+    const int PERIODS = 25;
+    for (int t = 1; t <= PERIODS; ++t){
+        simulate_step(env, t);
+        print_env(env, t);
+    }
+    cout << "\nSmimulation complete.\n";
+    return 0;
+}
