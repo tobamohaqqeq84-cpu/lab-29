@@ -37,5 +37,22 @@ bool load_data(const string& path, Env& env){
      if (getline(file,line)) continue;
      stringstream ss(line);
      string plot, stageStr, plantId;
-    
+     if(!getline(ss, plot, ',')) continue;
+     if(!getline(ss, stageStr, ',')) continue;
+     if(!getline(ss, plantId, ',')) continue;
+
+     int st = stage_from_string(stageStr);
+     if (st < 0){
+         cerr << "Warn: bad stage \"" << stageStr << "\" in line << line << "\n";
+      continue;   
+     }
+    env[plot][st].push_back(plantId);
+     ++lines_read;
+
+     if(lines_read == 0){
+         cerr << "Error: no data found in file " << path << endl;}
+         return true;
+     }
+void print_env(const Env& env, int period = -1){
+    if (period <0) cout <<
 }
