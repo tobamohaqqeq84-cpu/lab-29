@@ -54,5 +54,27 @@ bool load_data(const string& path, Env& env){
          return true;
      }
 void print_env(const Env& env, int period = -1){
-    if (period <0) cout <<
+    if (period <0) cout << "\n=== Initial state ===\n";
+    else cout << "\n=== After period " << period << " ===\n";
+
+    cout << left << setw(10) << "Plot" << right << stew(10) << "SEED" <<right << setw(12) << "GROW" << right << setw(10) << "MATURE" << endl;
+    cout << string(42, '-') << "\n";
+
+    for (const auto& [plot, buckets] : env){
+        cout << left << setw(10) << plot << right << setw(10) << buckets[SEEDLING].size() << right << setw(12) << buckets[GROWING].size() << right << setw(10) << buckets[MATURE].size() << endl;
+        
+    }
 }
+
+void simulate_step(Env& env, int t){
+    for (auto& [plot, buckets] : env)
+        if(!buckets[GROWING].empty()){
+    string id = buckets[GROWING].front();
+            buckets[GROWING].pop_front();
+            buckets[MATURE].push_back(id);
+}
+    if (!buckets[SEEDLING].empty()){
+        string id = buckets[SEEDLING].front();
+        buckets[SEEDLING].pop_front();
+        buckets[GROWING].push_back(id);
+    })
