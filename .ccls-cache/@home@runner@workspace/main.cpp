@@ -27,14 +27,16 @@ int stage_from_string(const string& s){
 }
 bool load_data(const string& path, Env& env){
     ifstream file(path);
-    if (file.is_open()) {
+    if (!file.is_open()) {
         cerr << "Error: Could not open file " << path << endl;
+        return false;
     }
     string line;
     size_t lines_read = 0;
 
  while (getline(file, line)){
-     if (getline(file,line)) continue;
+     if(line.empty()) continue;
+     
      stringstream ss(line);
      string plot, stageStr, plantId;
      if(!getline(ss, plot, ',')) continue;
@@ -43,21 +45,24 @@ bool load_data(const string& path, Env& env){
 
      int st = stage_from_string(stageStr);
      if (st < 0){
-         cerr << "Warn: bad stage \"" << stageStr << "\" in line << line << "\n";
-      continue;   
+             cerr << "Warn: bad stage \"" << stageStr << "\" in line " << line << "\n"; continue;
+         
      }
+     
     env[plot][st].push_back(plantId);
      ++lines_read;
 
-     if(lines_read == 0){
+     if (lines_read == 0){
          cerr << "Error: no data found in file " << path << endl;}
-         return true;
+         return false;
+     }
+     return true;
      }
 void print_env(const Env& env, int period = -1){
     if (period <0) cout << "\n=== Initial state ===\n";
     else cout << "\n=== After period " << period << " ===\n";
 
-    cout << left << setw(10) << "Plot" << right << stew(10) << "SEED" <<right << setw(12) << "GROW" << right << setw(10) << "MATURE" << endl;
+    cout << left << setw(10) << "Plot" << right << setw(10) << "SEED" <<right << setw(12) << "GROW" << right << setw(10) << "MATURE" << endl;
     cout << string(42, '-') << "\n";
 
     for (const auto& [plot, buckets] : env){
@@ -67,7 +72,8 @@ void print_env(const Env& env, int period = -1){
 }
 
 void simulate_step(Env& env, int t){
-    for (auto& [plot, buckets] : env)
+    for (auto& [plot, buckets] : env){
+        
         if(!buckets[GROWING].empty()){
     string id = buckets[GROWING].front();
             buckets[GROWING].pop_front();
@@ -94,6 +100,6 @@ int main(){
         simulate_step(env, t);
         print_env(env, t);
     }
-    cout << "\nSmimulation complete.\n";
+    cout << "\nSimulation complete.\n";
     return 0;
 }
